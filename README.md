@@ -1,6 +1,6 @@
 ## learning-flask
 
-Repositorio para hacer pruebas sobre (Flask)[http://flask.pocoo.org/]
+Repositorio para hacer pruebas sobre [Flask](http://flask.pocoo.org/)
 
 ### Premisas
 
