@@ -1,6 +1,6 @@
 ## learning-flask
 
-Repositorio para hacer pruebas sobre Flask
+Repositorio para hacer pruebas sobre (Flask)[http://flask.pocoo.org/]
 
 ### Premisas
 
@@ -8,7 +8,7 @@ Este no es un proyecto que esté en producción, ni se intenta. Es un pet proyec
 
 En un primer momento se usará una rama por cada cosa nueva.
 
-Lo que es importante es tener la parte de test cubierta, para eso, se intentará usar Travis.
+Lo que es importante es tener la parte de test cubierta, para eso, se intentará usar [Travis](https://travis-ci.org/).
 
 Python 2 mola, aunque ya es hora de python 3, se probará todo para que sea compatible con versiones de python 3 (3.5 y 3.6).
 
