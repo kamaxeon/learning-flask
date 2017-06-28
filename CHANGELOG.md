@@ -13,3 +13,6 @@ Diario de bitácoras de las versiones
 
 ## [0.0.3] 2017-06-28
  - Añadiendo pylint y flake8
+
+## [0.0.4] 2017-06-28
+ - Refactorizando para dejarlo todo en una carpeta

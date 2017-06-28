@@ -6,17 +6,13 @@ Repositorio para hacer pruebas sobre [Flask](http://flask.pocoo.org/)
 
 Este no es un proyecto que esté en producción, ni se intenta. Es un pet proyect para ir aprendiendo poco a poco.
 
-En un primer momento se usará una rama por cada cosa nueva.
+Se separará en carpetas, con la idea de poner ir viendo las distintas etapas de una forma fácil.
 
 Lo que es importante es tener la parte de test cubierta, para eso, se intentará usar [Travis](https://travis-ci.org/).
 
 Python 2 mola, aunque ya es hora de python 3, se probará todo para que sea compatible con versiones de python 3.
 
 Para separar las cosas, se intentará hacer uso de API para tener dependencia de la parte de presentación.
-
-### Lista de ramas
-
- * hello_world
 
 ## Referencias
 
