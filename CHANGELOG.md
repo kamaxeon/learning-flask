@@ -6,3 +6,7 @@ Diario de bitácoras de las versiones
 ### Added
  - Versión inicial
  - Creación estructura inicial
+ - Test inicial
+
+## [0.0.2] 2017-06-28
+ - Añadiendo soporte de tox
