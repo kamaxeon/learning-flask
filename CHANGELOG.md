@@ -10,3 +10,6 @@ Diario de bitácoras de las versiones
 
 ## [0.0.2] 2017-06-28
  - Añadiendo soporte de tox
+
+## [0.0.3] 2017-06-28
+ - Añadiendo pylint y flake8
