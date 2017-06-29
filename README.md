@@ -1,4 +1,4 @@
-## learning-flask
+## learning-flask [![Build Status](https://travis-ci.org/kamaxeon/learning-flask.svg?branch=master)](https://travis-ci.org/kamaxeon/learning-flask)
 
 Repositorio para hacer pruebas sobre [Flask](http://flask.pocoo.org/)
 
