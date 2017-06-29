@@ -3,15 +3,21 @@
 """ Aplicación inicial que sólo devuelve un hola mundo
 """
 
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)  # pylint: disable=C0103
 
 
-@app.route('/')
-def index():
+@app.route('/hello_world')
+def hello_world():
     "Index"
     return 'Hello World!'
+
+
+@app.route('/api/hello_world')
+def hello_world_api():
+    "Index json"
+    return jsonify({'message': 'Hello World!'})
 
 
 if __name__ == '__main__':
