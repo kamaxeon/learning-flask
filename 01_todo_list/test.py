@@ -35,7 +35,7 @@ class BasicTestCase(unittest.TestCase):
                                    content_type='application/json')
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['error'], 'Not Found')
+        self.assertEqual(data['error'], 'Not found')
 
 
 if __name__ == '__main__':
