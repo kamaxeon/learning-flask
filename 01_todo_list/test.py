@@ -21,11 +21,11 @@ class BasicTestCase(unittest.TestCase):
         """
         Test empty taks list
         """
-        response = self.tester.get('todo/api/v1.0/tasks',
+        response = self.tester.get('/todo/api/tasks',
                                    content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['error'], 'Empty list')
+        self.assertEqual(data['tasks'], [])
 
 
 if __name__ == '__main__':
