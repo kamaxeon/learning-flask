@@ -4,6 +4,7 @@
 import unittest
 import json
 
+
 from app import app
 
 
@@ -23,13 +24,9 @@ class BasicTestCase(unittest.TestCase):
         response = self.tester.get('todo/api/v1.0/tasks',
                                    content_type='application/json')
         self.assertEqual(response.status_code, 404)
-
-"""
-    def test_hello_world_json(self):
-        self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['message'], "Hello World!")
-"""
+        self.assertEqual(data['error'], 'Empty list')
+
 
 if __name__ == '__main__':
     unittest.main()
