@@ -13,6 +13,7 @@ La aplicación consistirá en una simple aplicación de tareas (ToDo List), no h
 |    POST     | /todo/api/tasks           | Crea una nueva tarea          | 
 |     PUT     | /todo/api/tasks/[task_id] | Actualiza una tarea existente | 
 |   DELETE    | /todo/api/tasks/[task_id] | Borra una tarea               |
+|   DELETE    | /todo/api/tasks           | Borra todas las tareas        |
 
 ## Estructura de una tarea
 
