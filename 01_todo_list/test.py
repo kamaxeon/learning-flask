@@ -37,6 +37,21 @@ class BasicTestCase(unittest.TestCase):
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(data['error'], 'Not found')
 
+    def test_create_a_invalid_new_taks(self):
+        """
+        Create a taks without title
+        """
+        response = self.tester.post('/todo/api/tasks',
+                                    data=json.dumps(dict(
+                                    description='Description'
+                                    )),
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        #data = json.loads(response.get_data(as_text=True))
+        #self.assertEqual(data['error'], 'Not found')
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
