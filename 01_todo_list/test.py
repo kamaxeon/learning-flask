@@ -24,6 +24,15 @@ class BasicTestCase(unittest.TestCase):
         self.tester.delete('/todo/api/tasks',
                            content_type='application/json')
 
+    def create_task(self, title='foo', description='bar'):
+        'Helper: Create a new task'
+        return self.tester.post('/todo/api/tasks',
+                                data=json.dumps(dict(
+                                    title=title,
+                                    description=description
+                                )),
+                                content_type='application/json')
+
     def test_empty_list_taks(self):
         """
         Test empty taks list
@@ -59,13 +68,7 @@ class BasicTestCase(unittest.TestCase):
         """
         Create a valid task
         """
-
-        response = self.tester.post('/todo/api/tasks',
-                                    data=json.dumps(dict(
-                                        title='Title',
-                                        description='Description'
-                                    )),
-                                    content_type='application/json')
+        response = self.create_task(title='Title', description='Description')
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(data['task']['title'], 'Title')
@@ -78,12 +81,7 @@ class BasicTestCase(unittest.TestCase):
         """
 
         # We need create it before
-        self.tester.post('/todo/api/tasks',
-                         data=json.dumps(dict(
-                             title='foo',
-                             description='bar'
-                         )),
-                         content_type='application/json')
+        self.create_task()
         # Now we try get it
         response = self.tester.get('/todo/api/tasks/1',
                                    content_type='application/json')
@@ -98,13 +96,7 @@ class BasicTestCase(unittest.TestCase):
         Update a task
         """
         # We need create it before
-        self.tester.post('/todo/api/tasks',
-                         data=json.dumps(dict(
-                             title='foo',
-                             description='bar'
-                         )),
-                         content_type='application/json')
-
+        self.create_task()
         # Now we update it
         response = self.tester.put('/todo/api/tasks/1',
                                    data=json.dumps(dict(
@@ -125,12 +117,7 @@ class BasicTestCase(unittest.TestCase):
         Delete a task
         """
         # We need create it before
-        self.tester.post('/todo/api/tasks',
-                         data=json.dumps(dict(
-                             title='foo',
-                             description='bar'
-                         )),
-                         content_type='application/json')
+        self.create_task()
         response = self.tester.delete('/todo/api/tasks/1',
                                       content_type='application/json')
         self.assertEqual(response.status_code, 204)
