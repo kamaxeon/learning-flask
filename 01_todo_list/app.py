@@ -16,6 +16,7 @@ def get_task(task_id):
     task = [ task for task in tasks if task['id'] ]
     if not task:
         abort(404)
+    return jsonify({'task': task[0]})
 
 
 @app.route('/todo/api/tasks', methods=['POST'])
