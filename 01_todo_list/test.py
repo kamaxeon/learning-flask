@@ -118,5 +118,25 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(data['task']['description'], 'foo')
         self.assertEqual(data['task']['done'], True)
 
+    def test_delete_an_existing_task(self):
+        # We need create it before
+        self.tester.post('/todo/api/tasks',
+                            data=json.dumps(dict(
+                                title='foo',
+                                description='bar'
+                            )),
+                            content_type='application/json')
+        response = self.tester.delete('/todo/api/tasks/1',
+                                content_type='application/json')
+        self.assertEqual(response.status_code, 204)
+        # If it's deleted, we can't get it now :-)
+        response = self.tester.get('/todo/api/tasks/1',
+                                content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data['error'], 'Not found')
+
+
+
 if __name__ == '__main__':
     unittest.main()
