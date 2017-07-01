@@ -11,4 +11,7 @@ install:
 
 script:
   - cd 00_hello_world
-  - python test.py
+  - tox
+  - cd ..
+  - cd 01_todo_list
+  - tox
