@@ -27,21 +27,20 @@ def create_task():
         id = 1
     else:
         id = tasks[-1]['id'] + 1
-
     task = {
         'id': id,
-        'title': request.json['title'],
-        'description': request.json.get('description', ''),
+        'title': request.get_json()['title'],
+        'description': request.get_json().get('description', ''),
         'done': False
     }
 
     tasks.append(task)
-    return jsonify({'task': task}), 201
+    return make_response(jsonify({'task': task}), 201)
 
 
 @app.route('/todo/api/tasks', methods=['DELETE'])
 def delete_tasks():
-    tasks = []
+    [ tasks.remove(t) for t in tasks ]
     return jsonify({'tasks': tasks})
 
 
