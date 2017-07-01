@@ -5,6 +5,7 @@ import unittest
 import json
 
 
+from random import randint
 from app import app
 
 
@@ -79,7 +80,6 @@ class BasicTestCase(unittest.TestCase):
         """
         Get an existing task
         """
-
         # We need create it before
         self.create_task()
         # Now we try get it
@@ -127,6 +127,18 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(data['error'], 'Not found')
+
+    def test_get_all_tasks(self):
+        """
+        Get all tasks
+        """
+        # We are going to create some tasks
+        number = len([self.create_task() for task in range(randint(2, 9))])
+        response = self.tester.get('/todo/api/tasks',
+                                   content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(len(data['tasks']), number)
 
 
 if __name__ == '__main__':
