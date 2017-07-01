@@ -94,6 +94,29 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(data['task']['description'], 'bar')
         self.assertEqual(data['task']['done'], False)
 
+    def test_update_an_existing_task(self):
+        # We need create it before
+        self.tester.post('/todo/api/tasks',
+                                data=json.dumps(dict(
+                                    title='foo',
+                                    description='bar'
+                                )),
+                                content_type='application/json')
+
+        # Now we update it
+        response = self.tester.put('/todo/api/tasks/1',
+                                data=json.dumps(dict(
+                                    title='barñ',
+                                    description='foo',
+                                    done=True
+                                )),
+                                content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data['task']['title'], 'barñ')
+        self.assertEqual(data['task']['description'], 'foo')
+        self.assertEqual(data['task']['done'], True)
 
 if __name__ == '__main__':
     unittest.main()
