@@ -73,7 +73,26 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(data['task']['description'], 'Description')
         self.assertEqual(data['task']['done'], False)
 
+    def test_get_a_valid_task(self):
+        """
+        Get an existing task
+        """
 
+        # We need create it before
+        self.tester.post('/todo/api/tasks',
+                                data=json.dumps(dict(
+                                    title='foo',
+                                    description='bar'
+                                )),
+                                content_type='application/json')
+        # Now we try get it
+        response = self.tester.get('/todo/api/tasks/1',
+                                   content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data['task']['title'], 'foo')
+        self.assertEqual(data['task']['description'], 'bar')
+        self.assertEqual(data['task']['done'], False)
 
 
 if __name__ == '__main__':
