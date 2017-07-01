@@ -1,7 +1,6 @@
 language: python
 
 python:
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -11,4 +10,7 @@ install:
 
 script:
   - cd 00_hello_world
-  - python test.py
+  - tox
+  - cd ..
+  - cd 01_todo_list
+  - tox
