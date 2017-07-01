@@ -47,7 +47,7 @@ def create_task():
 @app.route('/todo/api/tasks', methods=['DELETE'])
 def delete_tasks():
     'Remote all the tasks'
-    [tasks.remove(t) for t in tasks]  # pylint: disable=W0106
+    del tasks[:]
     return jsonify({'tasks': tasks})
 
 
