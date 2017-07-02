@@ -4,6 +4,8 @@ En este caso el objetivo mínimo es tener una pequeña aplicación Rest. Para ha
 
 La aplicación consistirá en una simple aplicación de tareas (ToDo List), no habrá persistencia, todo estará en memoria de la aplicación y una vez que paremos la aplicación todo se perderá.
 
+Lo que también se introduce en esta parte es el uso de los códigos http, en la parte de enlaces puedes ver la referencia de Wikipedia.
+
 ## API
 
 | Método HTTP | URI                       | Acción                        |
@@ -26,7 +28,8 @@ La estructura que nos expondrá la api tendrá los siguiente campos:
 
 ## Enlaces:
 
- * https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful 
+ * https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful
+ * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
 ## Pruebas
 
