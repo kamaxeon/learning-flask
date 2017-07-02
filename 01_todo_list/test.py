@@ -140,6 +140,28 @@ class BasicTestCase(unittest.TestCase):
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(len(data['tasks']), number)
 
+    def test_invalid_update(self):
+        """
+        Test all the invalid case for a invalid update
+        """
+
+        # Id not exists
+        response = self.tester.put('/todo/api/tasks/99',
+                                   data=json.dumps(dict(
+                                       title='barñ',
+                                       description='foo',
+                                       done=True
+                                   )),
+                                   content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+        # Id exist but we don't send bool in done field
+        self.create_task()
+        response = self.tester.put('/todo/api/tasks/1',
+                                   data=json.dumps(dict(done='foo')),
+                                   content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
 
 if __name__ == '__main__':
     unittest.main()
