@@ -21,7 +21,6 @@ Lo que también se introduce en esta parte es el uso de los códigos http, en la
 
 La estructura que nos expondrá la api tendrá los siguiente campos:
 
-* **uri**: La URI de la tarea (String)
 * **title**: El título de la tarea (String)
 * **description**: La description de la tarea (String)
 * **done**: Indica el estado de la tarea (Boolean)
