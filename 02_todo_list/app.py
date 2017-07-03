@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8
 'Flask todo list api using flask-restful'
-from flask import Flask, jsonify, abort, make_response, request
-from flask_restful import Api, Resource, reqparse
+from flask import Flask
+from flask_restful import Api, Resource, reqparse, fields, marshal, abort
 
 app = Flask(__name__)  # pylint: disable=C0103
 api = Api(app)  # pylint: disable=C0103
 tasks = []  # pylint: disable=C0103
+task_fields = {  # pylint: disable=C0103
+    'title': fields.String,
+    'description': fields.String,
+    'done': fields.Boolean,
+    'uri': fields.Url('task')
+}
 
 
 class TaskListAPI(Resource):
@@ -25,33 +31,29 @@ class TaskListAPI(Resource):
     @staticmethod
     def get():
         'Return the list of tasks'
-        return jsonify({'tasks': tasks})
+        return {'tasks': [marshal(task, task_fields) for task in tasks]}
 
-    @staticmethod
-    def post():
+    def post(self):
         'Create a new task'
-        if not request.get_json() or 'title' not in request.get_json():
-            abort(400)
-
+        args = self.reqparse.parse_args()
         if not tasks:
             new_id = 1
         else:
             new_id = tasks[-1]['id'] + 1
         task = {
             'id': new_id,
-            'title': request.get_json()['title'],
-            'description': request.get_json().get('description', ''),
+            'title': args['title'],
+            'description': args['description'],
             'done': False
         }
-
         tasks.append(task)
-        return make_response(jsonify({'task': task}), 201)
+        return {'task': marshal(task, task_fields)}, 201
 
     @staticmethod
     def delete():
         'Remote all the tasks'
         del tasks[:]
-        return jsonify({'tasks': tasks})
+        return {'tasks': marshal(tasks, task_fields)}
 
 
 class TaskAPI(Resource):
@@ -66,46 +68,36 @@ class TaskAPI(Resource):
         super(TaskAPI, self).__init__()
 
     @staticmethod
-    def get(task_id):
+    def get(id):  # pylint: disable=C0103,W0622
         'Return the task by id'
-        task = [task for task in tasks if task['id'] == task_id]
-        if not task:
-            return make_response(jsonify({'error': 'Not found'}), 404)
-        return jsonify({'task': task[0]})
+        return {'task': marshal(TaskAPI.find_task(id), task_fields)}
 
-    @staticmethod
-    def put(task_id):
+    def put(self, id):  # pylint: disable=C0103,W0622
         'Update a task'
-        task = [task for task in tasks if task['id'] == task_id]
-        if not task:
-            return make_response(jsonify({'error': 'Not found'}), 404)
-        request_update = request.get_json()
-        if request_update is None:
-            return make_response(jsonify({'error': 'Not found'}), 404)
-
-        if 'done' in request_update and \
-                not isinstance(request_update['done'], bool):
-            abort(404)
-
-        task[0]['title'] = request_update.get('title', task[0]['title'])
-        task[0]['description'] = request_update.get('description',
-                                                    task[0]['description'])
-        task[0]['done'] = request_update.get('done', task[0]['done'])
-
-        return jsonify({'task': task[0]})
+        task = TaskAPI.find_task(id)
+        args = self.reqparse.parse_args()
+        for key, value in args.items():
+            if value is not None:
+                task[key] = value
+        return {'task': marshal(task, task_fields)}
 
     @staticmethod
-    def delete(task_id):
+    def delete(id):  # pylint: disable=C0103,W0622
         'Delete a task'
-        task = [task for task in tasks if task['id'] == task_id]
-        if not task:
-            abort(404)
-        tasks.remove(tasks[0])
+        tasks.remove(TaskAPI.find_task(id))
         return ('', 204)
+
+    @staticmethod
+    def find_task(id):  # pylint: disable=C0103,W0622
+        'Return the task by id, if not exist, return 404 code'
+        try:
+            return [task for task in tasks if task['id'] == id][0]
+        except IndexError:
+            abort(404, message='Task {} not found'.format(id))
 
 
 api.add_resource(TaskListAPI, '/todo/api/tasks', endpoint='tasks')
-api.add_resource(TaskAPI, '/todo/api/tasks/<int:task_id>', endpoint='task')
+api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
 
 
 if __name__ == '__main__':
