@@ -52,7 +52,7 @@ class BasicTestCase(unittest.TestCase):
                                    content_type='application/json')
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['error'], 'Not found')
+        self.assertIn('Task 99 not found', data['message'])
 
     def test_create_a_invalid_new_task(self):
         """
@@ -126,14 +126,14 @@ class BasicTestCase(unittest.TestCase):
                                    content_type='application/json')
         self.assertEqual(response.status_code, 404)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['error'], 'Not found')
+        self.assertIn('Task 1 not found', data['message'])
 
     def test_get_all_tasks(self):
         """
         Get all tasks
         """
         # We are going to create some tasks
-        number = len([self.create_task() for task in range(randint(2, 9))])
+        number = len([self.create_task() in range(randint(2, 9))])
         response = self.tester.get('/todo/api/tasks',
                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -155,12 +155,16 @@ class BasicTestCase(unittest.TestCase):
                                    content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
-        # Id exist but we don't send bool in done field
+        # Id exist but we don't send valid values
         self.create_task()
         response = self.tester.put('/todo/api/tasks/1',
-                                   data=json.dumps(dict(done='foo')),
+                                   data=json.dumps(dict(foo='bar')),
                                    content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data['task']['title'], 'foo')
+        self.assertEqual(data['task']['description'], 'bar')
+        self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
 
 
 if __name__ == '__main__':
