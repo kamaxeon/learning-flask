@@ -1,10 +1,6 @@
 ## Objetivo
 
-En este caso el objetivo mínimo es tener una pequeña aplicación Rest. Para hacer lo más sencillo posible, no se usará las liberías de RestFull propias de flask.
-
-La aplicación consistirá en una simple aplicación de tareas (ToDo List), no habrá persistencia, todo estará en memoria de la aplicación y una vez que paremos la aplicación todo se perderá.
-
-Lo que también se introduce en esta parte es el uso de los códigos http, en la parte de enlaces puedes ver la referencia de Wikipedia.
+Partimos del ejemplo [anterior](01_todo_list), tenemos unos test que nos valen perfectamente. La idea es cambiar la parte de la aplicación usando las librerías de [Flask-RestFul](flask-restful.readthedocs.org/)
 
 ## API
 
@@ -21,6 +17,7 @@ Lo que también se introduce en esta parte es el uso de los códigos http, en la
 
 La estructura que nos expondrá la api tendrá los siguiente campos:
 
+* **uri**: La URI de la tarea (String)
 * **title**: El título de la tarea (String)
 * **description**: La description de la tarea (String)
 * **done**: Indica el estado de la tarea (Boolean)
@@ -28,6 +25,7 @@ La estructura que nos expondrá la api tendrá los siguiente campos:
 ## Enlaces:
 
  * https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful
+ * https://tutorials.technology/tutorials/59-Start-a-flask-project-from-zero-building-api-rest.html
  * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
 ## Pruebas
