@@ -2,7 +2,7 @@
 # coding=utf-8
 'Flask todo list api using flask-restful'
 from flask import Flask, jsonify, abort, make_response, request
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 
 app = Flask(__name__)  # pylint: disable=C0103
 api = Api(app)  # pylint: disable=C0103
@@ -11,6 +11,16 @@ tasks = []  # pylint: disable=C0103
 
 class TaskListAPI(Resource):
     'Task List Api'
+
+    def __init__(self):
+        'Init'
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('title', type=str, required=True,
+                                   help='No task title provided',
+                                   location='json')
+        self.reqparse.add_argument('description', type=str, default="",
+                                   location='json')
+        super(TaskListAPI, self).__init__()
 
     @staticmethod
     def get():
@@ -46,6 +56,14 @@ class TaskListAPI(Resource):
 
 class TaskAPI(Resource):
     'Task Api'
+
+    def __init__(self):
+        'Init'
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('title', type=str, location='json')
+        self.reqparse.add_argument('description', type=str, location='json')
+        self.reqparse.add_argument('done', type=bool, location='json')
+        super(TaskAPI, self).__init__()
 
     @staticmethod
     def get(task_id):
