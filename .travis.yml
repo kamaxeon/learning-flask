@@ -5,12 +5,5 @@ python:
   - "3.5"
   - "3.6"
 
-install:
-  - pip install -r 00_hello_world/requirements.txt
-
 script:
-  - cd 00_hello_world
-  - tox
-  - cd ..
-  - cd 01_todo_list
-  - tox
+  - ./travis_script.sh
