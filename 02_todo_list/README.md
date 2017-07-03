@@ -1,6 +1,6 @@
 ## Objetivo
 
-Partimos del ejemplo [anterior](01_todo_list), tenemos unos test que nos valen perfectamente. La idea es cambiar la parte de la aplicación usando las librerías de [Flask-RestFul](flask-restful.readthedocs.org/)
+Partimos del ejemplo [anterior](../01_todo_list), tenemos unos test que nos valen perfectamente. La idea es cambiar la parte de la aplicación usando las librerías de [Flask-RestFul](flask-restful.readthedocs.org/)
 
 ## API
 
