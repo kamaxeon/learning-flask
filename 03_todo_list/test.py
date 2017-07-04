@@ -9,7 +9,7 @@ from random import randint
 from app import app
 
 
-class BasicTestCase(unittest.TestCase):
+class TodoList(unittest.TestCase):
     "Test Class"
 
     def setUp(self):
@@ -165,6 +165,48 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(data['task']['title'], 'foo')
         self.assertEqual(data['task']['description'], 'bar')
         self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
+
+    def test_registration(self):
+        'Test user registration'
+        # Valid user
+        response = self.tester.post('/todo/api/auth/register',
+                                    data=json.dumps(dict(
+                                        login='foo',
+                                        password='bar')),
+                                    content_type='application/json')
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message'], 'Successfully registered')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 201)
+
+        # Exist user
+        response = self.tester.post('/todo/api/auth/register',
+                                    data=json.dumps(dict(
+                                        login='foo',
+                                        password='bar')),
+                                    content_type='application/json')
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['message'] == 'User foo exists')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 422)
+
+        # Without password
+        response = self.tester.post('/todo/api/auth/register',
+                                    data=json.dumps(dict(login='foo')),
+                                    content_type='application/json')
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message']['password'], 'No password provided')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 400)
+
+        # Without login
+        response = self.tester.post('/todo/api/auth/register',
+                                    data=json.dumps(dict(password='bar')),
+                                    content_type='application/json')
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message']['login'], 'No login provided')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 400)
 
 
 if __name__ == '__main__':
