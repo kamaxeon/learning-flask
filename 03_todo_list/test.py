@@ -176,12 +176,20 @@ class Registration(unittest.TestCase):
         """
         self.tester = app.test_client(self)
 
+    def tearDown(self):
+        """
+        TearDown
+        """
+        self.tester.delete('/todo/api/auth/register',
+                           content_type='application/json')
+
     def do_register(self, login='foo', password='bar'):
+        'Do register helper'
         return self.tester.post('/todo/api/auth/register',
-                                    data=json.dumps(dict(
-                                        login=login,
-                                        password=password)),
-                                    content_type='application/json')
+                                data=json.dumps(dict(
+                                    login=login,
+                                    password=password)),
+                                content_type='application/json')
 
     def test_valid_registration(self):
         'Test valid user registration'
@@ -192,7 +200,7 @@ class Registration(unittest.TestCase):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
-    def test_valid_registration(self):
+    def test_invalid_registration(self):
         'Test invalid user registration'
         # Exist user
         self.do_register()
@@ -220,6 +228,7 @@ class Registration(unittest.TestCase):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
+
 class Login(unittest.TestCase):
     'Test user login'
 
@@ -230,17 +239,19 @@ class Login(unittest.TestCase):
         self.tester = app.test_client(self)
 
     def do_login(self, login='foo', password='bar'):
+        'Do login helpers'
         return self.tester.post('/todo/api/auth/login',
-                                    data=json.dumps(dict(
-                                        login=login,
-                                        password=password)),
-                                    content_type='application/json')
+                                data=json.dumps(dict(
+                                    login=login,
+                                    password=password)),
+                                content_type='application/json')
 
     def test_valid_login(self):
+        'Valid login'
         self.tester.post('/todo/api/auth/register',
                          data=json.dumps(dict(
-                              login='foo',
-                              password='bar')),
+                             login='foo',
+                             password='bar')),
                          content_type='application/json')
         response = self.do_login()
         data = json.loads(response.data.decode())
@@ -249,10 +260,12 @@ class Login(unittest.TestCase):
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
-    def test_login_with_a_unregister_user(self):
+    def test_with_a_unregister_user(self):
+        'Login with a unregister user'
         pass
 
-    def test_login_with_a_invalid_password(self):
+    def test_with_wrong_password(self):
+        'Incorrect password'
         pass
 
 
