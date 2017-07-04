@@ -166,27 +166,39 @@ class TodoList(unittest.TestCase):
         self.assertEqual(data['task']['description'], 'bar')
         self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
 
-    def test_registration(self):
-        'Test user registration'
-        # Valid user
-        response = self.tester.post('/todo/api/auth/register',
+
+class Registration(unittest.TestCase):
+    'Test Class for Registration Process'
+
+    def setUp(self):
+        """
+        Setup function
+        """
+        self.tester = app.test_client(self)
+
+    def do_register(self, login='foo', password='bar'):
+        return self.tester.post('/todo/api/auth/register',
                                     data=json.dumps(dict(
-                                        login='foo',
-                                        password='bar')),
+                                        login=login,
+                                        password=password)),
                                     content_type='application/json')
+
+    def test_valid_registration(self):
+        'Test valid user registration'
+        # Valid user
+        response = self.do_register()
         data = json.loads(response.data.decode())
         self.assertEqual(data['message'], 'Successfully registered')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
+    def test_valid_registration(self):
+        'Test invalid user registration'
         # Exist user
-        response = self.tester.post('/todo/api/auth/register',
-                                    data=json.dumps(dict(
-                                        login='foo',
-                                        password='bar')),
-                                    content_type='application/json')
+        self.do_register()
+        response = self.do_register()
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message'] == 'User foo exists')
+        self.assertEqual(data['message'], 'User foo exists')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 422)
 
@@ -207,6 +219,41 @@ class TodoList(unittest.TestCase):
         self.assertEqual(data['message']['login'], 'No login provided')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
+
+class Login(unittest.TestCase):
+    'Test user login'
+
+    def setUp(self):
+        """
+        Setup function
+        """
+        self.tester = app.test_client(self)
+
+    def do_login(self, login='foo', password='bar'):
+        return self.tester.post('/todo/api/auth/login',
+                                    data=json.dumps(dict(
+                                        login=login,
+                                        password=password)),
+                                    content_type='application/json')
+
+    def test_valid_login(self):
+        self.tester.post('/todo/api/auth/register',
+                         data=json.dumps(dict(
+                              login='foo',
+                              password='bar')),
+                         content_type='application/json')
+        response = self.do_login()
+        data = json.loads(response.data.decode())
+        self.assertEqual(data['message'], 'Successfully logged')
+        self.assertTrue(data['auth_token'])
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 201)
+
+    def test_login_with_a_unregister_user(self):
+        pass
+
+    def test_login_with_a_invalid_password(self):
+        pass
 
 
 if __name__ == '__main__':
