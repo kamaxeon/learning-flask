@@ -4,7 +4,9 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, fields, marshal, abort
 
+
 app = Flask(__name__)  # pylint: disable=C0103
+
 api = Api(app)  # pylint: disable=C0103
 tasks = []  # pylint: disable=C0103
 task_fields = {  # pylint: disable=C0103
@@ -13,6 +15,42 @@ task_fields = {  # pylint: disable=C0103
     'done': fields.Boolean,
     'uri': fields.Url('task')
 }
+
+users = []  # pylint: disable=C0103
+
+
+def is_user(login):
+    'Return if a user exists'
+    for user in users:
+        if user['login'] == login:
+            return True
+    return False
+
+
+class RegisterAPI(Resource):
+    'Register Class'
+
+    def __init__(self):
+        'Init'
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('login', type=str, required=True,
+                                   help='No login provided', location='json')
+        self.reqparse.add_argument('password', type=str, required=True,
+                                   help='No password provided',
+                                   location='json')
+        super(RegisterAPI, self).__init__()
+
+    def post(self):
+        'Create a user'
+        args = self.reqparse.parse_args()
+        if is_user(args['login']):
+            return {'message': 'User {} exists'.format(args['login'])}, 422
+        user = {
+            'login': args['login'],
+            'password':  args['password']
+        }
+        users.append(user)
+        return {'message': 'Successfully registered'}, 201
 
 
 class TaskListAPI(Resource):
@@ -98,7 +136,7 @@ class TaskAPI(Resource):
 
 api.add_resource(TaskListAPI, '/todo/api/tasks', endpoint='tasks')
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
-
+api.add_resource(RegisterAPI, '/todo/api/auth/register', endpoint='register')
 
 if __name__ == '__main__':
     app.run(debug=True)
