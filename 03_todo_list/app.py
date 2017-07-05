@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 'Flask todo list api using flask-restful'
-from flask import Flask, jsonify, request
-from flask_restful import Api, Resource, reqparse, fields, marshal, abort
+from datetime import datetime, timedelta
 from functools import wraps
-
 import jwt
-import datetime
-
+from flask import Flask, jsonify, request, make_response
+from flask_restful import Api, Resource, reqparse, fields, marshal, abort
 
 app = Flask(__name__)  # pylint: disable=C0103
 
@@ -25,27 +23,30 @@ users = []  # pylint: disable=C0103
 
 
 def token_required(f):
-    'JWT Decorador'
+    'JWT Decorator'
     @wraps(f)
     def decorated(*args, **kwargs):
         'Decorator'
-        token = None
+        auth_token = None
 
         if 'Authorization' in request.headers:
             auth_token = request.headers['Authorization'].split(' ')[1]
         else:
-            return jsonify({'message' :
-                            'Token required.'}), 401
+            return make_response(jsonify({'message': 'Token required.'}), 401)
         try:
-            payload = jwt.decode(auth_token, app.config['SECRET_KEY'])
+            jwt.decode(auth_token, app.config['SECRET_KEY'])
             return f(*args, **kwargs)
         except jwt.ExpiredSignatureError:
-            return jsonify({'message' :
-                            'Signature expired. Please log in again.'}), 401
+            return make_response(
+                jsonify(
+                    {'message': 'Signature expired. Please log in again.'}),
+                401)
         except jwt.InvalidTokenError:
-            return jsonify({'message' :
-                            'Invalid token. Please log in again.'}), 401
+            return make_response(
+                jsonify(
+                    {'message': 'Invalid token. Please log in again.'}), 401)
     return decorated
+
 
 def is_user(login):
     'Return if a user exists'
@@ -70,9 +71,8 @@ def encode_auth_token(login):
     """
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() +
-                datetime.timedelta(days=0, seconds=5),
-            'iat': datetime.datetime.utcnow(),
+            'exp': datetime.utcnow() + timedelta(days=0, seconds=5),
+            'iat': datetime.utcnow(),
             'sub': login
         }
         return jwt.encode(
@@ -80,15 +80,18 @@ def encode_auth_token(login):
             app.config['SECRET_KEY'],
             algorithm='HS256'
         )
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         return e
+
 
 class StatusAPI(Resource):
     'Status Class'
     method_decorators = [token_required]
 
-    def get(self):
-        return {'message': 'foo'}
+    @staticmethod
+    def get():
+        'Get function'
+        return {'message': 'Successfully logged in'}
 
 
 class LoginAPI(Resource):
@@ -112,8 +115,6 @@ class LoginAPI(Resource):
             return {'message': 'Successfully logged',
                     'auth_token': auth_token.decode()}, 201
         return {'message': 'Login failed'}, 401
-
-
 
 
 class RegisterAPI(Resource):
@@ -145,6 +146,7 @@ class RegisterAPI(Resource):
     def delete():
         'Remote all the tasks'
         del users[:]
+
 
 class TaskListAPI(Resource):
     'Task List Api'
