@@ -3,6 +3,7 @@
 "Clase de Test"
 import unittest
 import json
+import time
 
 
 from random import randint
@@ -287,6 +288,82 @@ class Login(unittest.TestCase):
         response = self.do_login(password='ard')
         data = json.loads(response.data.decode())
         self.assertEqual(data['message'], 'Login failed')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 401)
+
+
+class Status(unittest.TestCase):
+    'Test user status'
+
+    def setUp(self):
+        """
+        Setup function
+        """
+        self.tester = app.test_client(self)
+
+    def tearDown(self):
+        """
+        TearDown
+        """
+        self.tester.delete('/todo/api/auth/register',
+                           content_type='application/json')
+
+    def do_register(self, login='foo', password='bar'):
+        'Do register helpers'
+        return self.tester.post('/todo/api/auth/register',
+                                data=json.dumps(dict(
+                                    login=login,
+                                    password=password)),
+                                content_type='application/json')
+
+    def do_login(self, login='foo', password='bar'):
+        'Do login helpers'
+        return self.tester.post('/todo/api/auth/login',
+                                data=json.dumps(dict(
+                                    login=login,
+                                    password=password)),
+                                content_type='application/json')
+
+    def test_valid_status(self):
+        'Valid login'
+        self.do_register()
+        response_login = self.do_login()
+        response = self.tester.post('/todo/api/auth/status',
+                                    headers=dict(
+                                        Authorization='Bearer ' + json.loads(
+                                            response_login.data.decode()
+                                            )['auth_token']))
+
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['message'] == 'Successfully logged in')
+        self.assertTrue(data['auth_token'])
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_invalid_login(self):
+        'Invalid user'
+
+        # Invalid token
+        response = self.tester.post('/todo/api/auth/status',
+                                    headers=dict(
+                                        Authorization='Bearer ' + 'ffdfdf'))
+
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['message'] == 'Invalid token')
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 401)
+
+        # Expired token
+        self.do_register()
+        response_login = self.do_login()
+        time.sleep(6)
+        response = self.tester.post('/todo/api/auth/status',
+                                    headers=dict(
+                                        Authorization='Bearer ' + json.loads(
+                                            response_login.data.decode()
+                                            )['auth_token']))
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['message'] == 'Expired token')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 401)
 
