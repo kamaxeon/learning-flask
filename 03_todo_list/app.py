@@ -26,6 +26,35 @@ def is_user(login):
             return True
     return False
 
+def check_login(login, password):
+    'Check user and passowrd'
+    for user in users:
+        if user['login'] == login and user['password'] == password:
+            return True
+    return False
+
+class LoginAPI(Resource):
+    'Login Class'
+
+    def __init__(self):
+        'Init'
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('login', type=str, required=True,
+                                   help='No login provided', location='json')
+        self.reqparse.add_argument('password', type=str, required=True,
+                                   help='No password provided',
+                                   location='json')
+        super(LoginAPI, self).__init__()
+
+    def post(self):
+        'Post function'
+        args = self.reqparse.parse_args()
+        if check_login(args['login'], args['password']):
+            return {'message': 'Successfully logged', 'auth_token': 'foo'}, 201
+        return {'message': 'Login failed'}, 401
+
+
+
 
 class RegisterAPI(Resource):
     'Register Class'
@@ -52,6 +81,10 @@ class RegisterAPI(Resource):
         users.append(user)
         return {'message': 'Successfully registered'}, 201
 
+    @staticmethod
+    def delete():
+        'Remote all the tasks'
+        del users[:]
 
 class TaskListAPI(Resource):
     'Task List Api'
@@ -137,6 +170,7 @@ class TaskAPI(Resource):
 api.add_resource(TaskListAPI, '/todo/api/tasks', endpoint='tasks')
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
 api.add_resource(RegisterAPI, '/todo/api/auth/register', endpoint='register')
+api.add_resource(LoginAPI, '/todo/api/auth/login', endpoint='login')
 
 if __name__ == '__main__':
     app.run(debug=True)
