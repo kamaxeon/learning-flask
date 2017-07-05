@@ -5,7 +5,6 @@ import unittest
 import json
 import time
 
-
 from random import randint
 from app import app
 
@@ -328,14 +327,15 @@ class Status(unittest.TestCase):
         'Valid login'
         self.do_register()
         response_login = self.do_login()
-        response = self.tester.post('/todo/api/auth/status',
+        response = self.tester.get('/todo/api/auth/status',
                                     headers=dict(
                                         Authorization='Bearer ' + json.loads(
                                             response_login.data.decode()
                                             )['auth_token']))
 
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message'] == 'Successfully logged in')
+        print(data)
+        self.assertEqual(data['message'], 'Successfully logged in')
         self.assertTrue(data['auth_token'])
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 200)
@@ -344,12 +344,12 @@ class Status(unittest.TestCase):
         'Invalid user'
 
         # Invalid token
-        response = self.tester.post('/todo/api/auth/status',
+        response = self.tester.get('/todo/api/auth/status',
                                     headers=dict(
                                         Authorization='Bearer ' + 'ffdfdf'))
 
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message'] == 'Invalid token')
+        self.assertEqual(data['message'], 'Invalid token')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 401)
 
@@ -357,13 +357,13 @@ class Status(unittest.TestCase):
         self.do_register()
         response_login = self.do_login()
         time.sleep(6)
-        response = self.tester.post('/todo/api/auth/status',
+        response = self.tester.get('/todo/api/auth/status',
                                     headers=dict(
                                         Authorization='Bearer ' + json.loads(
                                             response_login.data.decode()
                                             )['auth_token']))
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message'] == 'Expired token')
+        self.assertEqual(data['message'], 'Expired token')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 401)
 

@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 'Flask todo list api using flask-restful'
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse, fields, marshal, abort
+from functools import wraps
+
+import jwt
+import datetime
 
 
 app = Flask(__name__)  # pylint: disable=C0103
@@ -15,9 +19,33 @@ task_fields = {  # pylint: disable=C0103
     'done': fields.Boolean,
     'uri': fields.Url('task')
 }
-
+app.config['SECRET_KEY'] = "secret_key"  # pylint: disable=C0103
 users = []  # pylint: disable=C0103
+# blacklisted_tokens = []  # pylint: disable=C0103
 
+
+def token_required(f):
+    'JWT Decorador'
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        'Decorator'
+        token = None
+
+        if 'Authorization' in request.headers:
+            auth_token = request.headers['Authorization'].split(' ')[1]
+        else:
+            return jsonify({'message' :
+                            'Token required.'}), 401
+        try:
+            payload = jwt.decode(auth_token, app.config['SECRET_KEY'])
+            return f(*args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message' :
+                            'Signature expired. Please log in again.'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message' :
+                            'Invalid token. Please log in again.'}), 401
+    return decorated
 
 def is_user(login):
     'Return if a user exists'
@@ -26,12 +54,42 @@ def is_user(login):
             return True
     return False
 
+
 def check_login(login, password):
     'Check user and passowrd'
     for user in users:
         if user['login'] == login and user['password'] == password:
             return True
     return False
+
+
+def encode_auth_token(login):
+    """
+    Generates the Auth Token
+    :return: string
+    """
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() +
+                datetime.timedelta(days=0, seconds=5),
+            'iat': datetime.datetime.utcnow(),
+            'sub': login
+        }
+        return jwt.encode(
+            payload,
+            app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
+
+class StatusAPI(Resource):
+    'Status Class'
+    method_decorators = [token_required]
+
+    def get(self):
+        return {'message': 'foo'}
+
 
 class LoginAPI(Resource):
     'Login Class'
@@ -50,7 +108,9 @@ class LoginAPI(Resource):
         'Post function'
         args = self.reqparse.parse_args()
         if check_login(args['login'], args['password']):
-            return {'message': 'Successfully logged', 'auth_token': 'foo'}, 201
+            auth_token = encode_auth_token(args['login'])
+            return {'message': 'Successfully logged',
+                    'auth_token': auth_token.decode()}, 201
         return {'message': 'Login failed'}, 401
 
 
@@ -171,6 +231,7 @@ api.add_resource(TaskListAPI, '/todo/api/tasks', endpoint='tasks')
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
 api.add_resource(RegisterAPI, '/todo/api/auth/register', endpoint='register')
 api.add_resource(LoginAPI, '/todo/api/auth/login', endpoint='login')
+api.add_resource(StatusAPI, '/todo/api/auth/status', endpoint='status')
 
 if __name__ == '__main__':
     app.run(debug=True)
