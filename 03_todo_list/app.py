@@ -19,12 +19,12 @@ task_fields = {  # pylint: disable=C0103
 }
 app.config['SECRET_KEY'] = "secret_key"  # pylint: disable=C0103
 users = []  # pylint: disable=C0103
-# blacklisted_tokens = []  # pylint: disable=C0103
+blacklisted_tokens = []  # pylint: disable=C0103
 
 
-def token_required(f):
+def token_required(function):
     'JWT Decorator'
-    @wraps(f)
+    @wraps(function)
     def decorated(*args, **kwargs):
         'Decorator'
         auth_token = None
@@ -33,9 +33,12 @@ def token_required(f):
             auth_token = request.headers['Authorization'].split(' ')[1]
         else:
             return make_response(jsonify({'message': 'Token required.'}), 401)
+        if auth_token in blacklisted_tokens:
+            return make_response(
+                jsonify({'message': 'Blacklisted tokens.'}), 401)
         try:
             jwt.decode(auth_token, app.config['SECRET_KEY'])
-            return f(*args, **kwargs)
+            return function(*args, **kwargs)
         except jwt.ExpiredSignatureError:
             return make_response(
                 jsonify(
@@ -80,8 +83,20 @@ def encode_auth_token(login):
             app.config['SECRET_KEY'],
             algorithm='HS256'
         )
-    except Exception as e:  # pylint: disable=W0703
-        return e
+    except Exception as exception:  # pylint: disable=W0703
+        return exception
+
+
+class LogOutAPI(Resource):
+    'LogOut Class'
+    method_decorators = [token_required]
+
+    @staticmethod
+    def post():
+        'Post function'
+        auth_token = request.headers['Authorization'].split(' ')[1]
+        blacklisted_tokens.append(auth_token)
+        return {'message': 'Successfully logged out.'}
 
 
 class StatusAPI(Resource):
@@ -145,6 +160,7 @@ class RegisterAPI(Resource):
     @staticmethod
     def delete():
         'Remote all the tasks'
+        del blacklisted_tokens[:]
         del users[:]
 
 
@@ -234,6 +250,7 @@ api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
 api.add_resource(RegisterAPI, '/todo/api/auth/register', endpoint='register')
 api.add_resource(LoginAPI, '/todo/api/auth/login', endpoint='login')
 api.add_resource(StatusAPI, '/todo/api/auth/status', endpoint='status')
+api.add_resource(LogOutAPI, '/todo/api/auth/logout', endpoint='logout')
 
 if __name__ == '__main__':
     app.run(debug=True)

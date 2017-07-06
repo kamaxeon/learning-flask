@@ -367,5 +367,55 @@ class Status(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
 
+class LogOut(unittest.TestCase):
+    'LogOut UnitTest'
+
+    def setUp(self):
+        """
+        Setup function
+        """
+        self.tester = app.test_client(self)
+
+    def tearDown(self):
+        """
+        TearDown
+        """
+        self.tester.delete('/todo/api/auth/register',
+                           content_type='application/json')
+
+    def test_logout(self):
+        'Test Logout'
+
+        # Login first
+        self.tester.post('/todo/api/auth/register',
+                         data=json.dumps(dict(
+                             login='foo',
+                             password='bar')),
+                         content_type='application/json')
+
+        response_login = self.tester.post('/todo/api/auth/login',
+                                          data=json.dumps(dict(
+                                              login='foo',
+                                              password='bar')),
+                                          content_type='application/json')
+        auth_token = json.loads(response_login.data.decode())['auth_token']
+        # LogOut
+        response = self.tester.post('/todo/api/auth/logout',
+                                    headers=dict(
+                                        Authorization='Bearer ' + auth_token))
+        data = json.loads(response.data.decode())
+        self.assertIn('Successfully logged out.', data['message'])
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 200)
+        # LogOut again
+        response = self.tester.post('/todo/api/auth/logout',
+                                    headers=dict(
+                                        Authorization='Bearer ' + auth_token))
+        data = json.loads(response.data.decode())
+        self.assertIn('Blacklisted tokens.', data['message'])
+        self.assertTrue(response.content_type == 'application/json')
+        self.assertEqual(response.status_code, 401)
+
+
 if __name__ == '__main__':
     unittest.main()
