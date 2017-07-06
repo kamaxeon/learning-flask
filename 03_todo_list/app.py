@@ -182,6 +182,7 @@ class TaskListAPI(Resource):
         'Return the list of tasks'
         return {'tasks': [marshal(task, task_fields) for task in tasks]}
 
+    @token_required
     def post(self):
         'Create a new task'
         args = self.reqparse.parse_args()
@@ -221,6 +222,7 @@ class TaskAPI(Resource):
         'Return the task by id'
         return {'task': marshal(TaskAPI.find_task(id), task_fields)}
 
+    @token_required
     def put(self, id):  # pylint: disable=C0103,W0622
         'Update a task'
         task = TaskAPI.find_task(id)

@@ -42,18 +42,17 @@ class TodoList(BaseTestClass):
         """
         Create a taks without title
         """
-        response = self.tester.post('/todo/api/tasks',
-                                    data=json.dumps(dict(
-                                        description='Description'
-                                    )),
-                                    content_type='application/json')
+        token = self.register_login_and_token()
+        response = self.create_task(token=token,
+                                    data={'description': 'Description'})
         self.assertEqual(response.status_code, 400)
 
     def test_create_a_valid_new_task(self):
         """
         Create a valid task
         """
-        response = self.create_task(title='Title', description='Description')
+        token = self.register_login_and_token()
+        response = self.create_task(token=token)
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(data['task']['title'], 'Title')
@@ -65,14 +64,15 @@ class TodoList(BaseTestClass):
         Get an existing task
         """
         # We need create it before
-        self.create_task()
+        token = self.register_login_and_token()
+        self.create_task(token=token)
         # Now we try get it
         response = self.tester.get('/todo/api/tasks/1',
                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['task']['title'], 'foo')
-        self.assertEqual(data['task']['description'], 'bar')
+        self.assertEqual(data['task']['title'], 'Title')
+        self.assertEqual(data['task']['description'], 'Description')
         self.assertEqual(data['task']['done'], False)
 
     def test_update_an_existing_task(self):
@@ -80,15 +80,15 @@ class TodoList(BaseTestClass):
         Update a task
         """
         # We need create it before
-        self.create_task()
+        token = self.register_login_and_token()
+        self.create_task(token=token)
         # Now we update it
-        response = self.tester.put('/todo/api/tasks/1',
-                                   data=json.dumps(dict(
-                                       title='barñ',
-                                       description='foo',
-                                       done=True
-                                   )),
-                                   content_type='application/json')
+        data = {
+            'title': 'barñ',
+            'description': 'foo',
+            'done': True
+        }
+        response = self.update_task(task_id=1, token=token, data=data)
 
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
@@ -101,7 +101,8 @@ class TodoList(BaseTestClass):
         Delete a task
         """
         # We need create it before
-        self.create_task()
+        token = self.register_login_and_token()
+        self.create_task(token=token)
         response = self.tester.delete('/todo/api/tasks/1',
                                       content_type='application/json')
         self.assertEqual(response.status_code, 204)
@@ -117,7 +118,8 @@ class TodoList(BaseTestClass):
         Get all tasks
         """
         # We are going to create some tasks
-        number = len([self.create_task() in range(randint(2, 9))])
+        token = self.register_login_and_token()
+        number = len([self.create_task(token=token) in range(randint(2, 9))])
         response = self.tester.get('/todo/api/tasks',
                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -130,24 +132,25 @@ class TodoList(BaseTestClass):
         """
 
         # Id not exists
-        response = self.tester.put('/todo/api/tasks/99',
-                                   data=json.dumps(dict(
-                                       title='barñ',
-                                       description='foo',
-                                       done=True
-                                   )),
-                                   content_type='application/json')
+        token = self.register_login_and_token()
+        data = {
+            'title': 'barñ',
+            'description': 'foo',
+            'done': True
+        }
+        response = self.update_task(task_id=99, token=token, data=data)
         self.assertEqual(response.status_code, 404)
 
         # Id exist but we don't send valid values
-        self.create_task()
-        response = self.tester.put('/todo/api/tasks/1',
-                                   data=json.dumps(dict(foo='bar')),
-                                   content_type='application/json')
+        self.create_task(token=token)
+        data = {
+            'foo': 'bar'
+        }
+        response = self.update_task(task_id=1, token=token, data=data)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['task']['title'], 'foo')
-        self.assertEqual(data['task']['description'], 'bar')
+        self.assertEqual(data['task']['title'], 'Title')
+        self.assertEqual(data['task']['description'], 'Description')
         self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
 
 
