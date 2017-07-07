@@ -2,7 +2,7 @@
 
 Partimos del ejemplo [anterior](./02_todo_list), tenemos nuestra API para la lista de tareas, y ahora queremos meterle autentificación mediante tokens usando [jwt](https://jwt.io/). En esta iteración no vamos a usar ninguna librería de flask y jwt, usaremos la libería [jwt nativa](https://github.com/jpadilla/pyjwt) en python.
 
-Los métodos del todo list que no usen el verbo GET, deberán estar autentificados. No existirá tampoco persistencia con la autentificación, estará todo en memoria.
+Los métodos del todo list que usen el verbo PUT, deberán estar autentificados. No existirá tampoco persistencia con la autentificación, estará todo en memoria.
 
 Para esto usaremos dos nuevas estructuras, una para los usuarios, y otra para los sesiones que se han hecho logout y ya son consideradas como inválidas.
 
