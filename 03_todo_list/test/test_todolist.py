@@ -5,7 +5,7 @@ import unittest
 import json
 
 from random import randint
-from test.base import BaseTestClass
+from test.base import BaseTestClass, DEFAULT_TITLE, DEFAULT_DESCRIPTION
 
 
 class TodoList(BaseTestClass):
@@ -55,8 +55,8 @@ class TodoList(BaseTestClass):
         response = self.create_task(token=token)
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['task']['title'], 'Title')
-        self.assertEqual(data['task']['description'], 'Description')
+        self.assertEqual(data['task']['title'], DEFAULT_TITLE)
+        self.assertEqual(data['task']['description'], DEFAULT_DESCRIPTION)
         self.assertEqual(data['task']['done'], False)
 
     def test_get_a_valid_task(self):
@@ -71,8 +71,8 @@ class TodoList(BaseTestClass):
                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['task']['title'], 'Title')
-        self.assertEqual(data['task']['description'], 'Description')
+        self.assertEqual(data['task']['title'], DEFAULT_TITLE)
+        self.assertEqual(data['task']['description'], DEFAULT_DESCRIPTION)
         self.assertEqual(data['task']['done'], False)
 
     def test_update_an_existing_task(self):
@@ -149,8 +149,8 @@ class TodoList(BaseTestClass):
         response = self.update_task(task_id=1, token=token, data=data)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.get_data(as_text=True))
-        self.assertEqual(data['task']['title'], 'Title')
-        self.assertEqual(data['task']['description'], 'Description')
+        self.assertEqual(data['task']['title'], DEFAULT_TITLE)
+        self.assertEqual(data['task']['description'], DEFAULT_DESCRIPTION)
         self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
 
 

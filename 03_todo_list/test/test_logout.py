@@ -21,9 +21,7 @@ class LogOut(BaseTestClass):
         'Test Logout'
 
         # Register and login first
-        self.do_register()
-        response_login = self.do_login()
-        auth_token = json.loads(response_login.data.decode())['auth_token']
+        auth_token = self.register_login_and_token()
 
         # LogOut
         response = self.tester.post('/todo/api/auth/logout',
