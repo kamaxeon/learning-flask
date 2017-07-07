@@ -48,7 +48,7 @@ class Status(BaseTestClass):
         # Expired token
         self.do_register()
         response_login = self.do_login()
-        time.sleep(6)
+        time.sleep(4)
         response = self.get_status(token=json.loads(
             response_login.data.decode())['auth_token'])
         data = json.loads(response.data.decode())
