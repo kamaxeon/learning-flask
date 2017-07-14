@@ -6,7 +6,10 @@ from datetime import datetime, timedelta
 # import jwt
 from flask import Flask, jsonify, request, make_response
 from flask_restful import Api, Resource, reqparse, fields, marshal, abort
-
+from flask_jwt_extended import JWTManager, jwt_required,\
+    create_access_tokenfrom flask_jwt_extended import JWTManager, jwt_required,\
+    create_access_token
+    
 
 app = Flask(__name__)  # pylint: disable=C0103
 
