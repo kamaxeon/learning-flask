@@ -32,6 +32,7 @@ blacklisted_tokens = set()  # pylint: disable=C0103
 
 @jwt.expired_token_loader()
 def my_expired_token_callback():
+    'Loader function used when an expired token accesses a protected endpoint'
     return make_response(
         jsonify(
             {'message': 'Signature expired. Please log in again.'}), 401)
@@ -39,6 +40,7 @@ def my_expired_token_callback():
 
 @jwt.revoked_token_loader
 def my_revoked_token_callback():
+    'Loader function used when a revoked token accesses a protected endpoint'
     return make_response(jsonify({'message': 'Blacklisted tokens.'}), 401)
 
 
