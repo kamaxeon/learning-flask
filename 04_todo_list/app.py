@@ -19,7 +19,7 @@ task_fields = {  # pylint: disable=C0103
 }
 app.config['SECRET_KEY'] = "secret_key"  # pylint: disable=C0103
 users = []  # pylint: disable=C0103
-blacklisted_tokens = []  # pylint: disable=C0103
+blacklisted_tokens = set()  # pylint: disable=C0103
 
 
 def token_required(function):
@@ -95,7 +95,7 @@ class LogOutAPI(Resource):
     def post():
         'Post function'
         auth_token = request.headers['Authorization'].split(' ')[1]
-        blacklisted_tokens.append(auth_token)
+        blacklisted_tokens.add(auth_token)
         return {'message': 'Successfully logged out.'}
 
 
@@ -159,8 +159,8 @@ class RegisterAPI(Resource):
 
     @staticmethod
     def delete():
-        'Remote all the tasks'
-        del blacklisted_tokens[:]
+        'Remote all the tasks and tokens'
+        blacklisted_tokens.clear()
         del users[:]
 
 
