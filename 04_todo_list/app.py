@@ -42,7 +42,7 @@ def my_revoked_token_callback():
     return make_response(jsonify({'message': 'Blacklisted tokens.'}), 401)
 
 
-# def token_required(function):
+# def jwt_required(function):
 #     'JWT Decorator'
 #     @wraps(function)
 #     def decorated(*args, **kwargs):
@@ -109,7 +109,7 @@ def check_login(login, password):
 
 class LogOutAPI(Resource):
     'LogOut Class'
-    method_decorators = [token_required]
+    method_decorators = [jwt_required]
 
     @staticmethod
     def post():
@@ -121,7 +121,7 @@ class LogOutAPI(Resource):
 
 class StatusAPI(Resource):
     'Status Class'
-    method_decorators = [token_required]
+    method_decorators = [jwt_required]
 
     @staticmethod
     def get():
@@ -202,7 +202,7 @@ class TaskListAPI(Resource):
         'Return the list of tasks'
         return {'tasks': [marshal(task, task_fields) for task in tasks]}
 
-    @token_required
+    @jwt_required
     def post(self):
         'Create a new task'
         args = self.reqparse.parse_args()
@@ -242,7 +242,7 @@ class TaskAPI(Resource):
         'Return the task by id'
         return {'task': marshal(TaskAPI.find_task(id), task_fields)}
 
-    @token_required
+    @jwt_required
     def put(self, id):  # pylint: disable=C0103,W0622
         'Update a task'
         task = TaskAPI.find_task(id)
