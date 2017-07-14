@@ -4,10 +4,10 @@
 from datetime import timedelta
 # from functools import wraps
 # import jwt
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse, fields, marshal, abort
 from flask_jwt_extended import JWTManager, jwt_required,\
-    create_access_token
+    create_access_token, get_raw_jwt
 
 
 app = Flask(__name__)  # pylint: disable=C0103
@@ -51,33 +51,11 @@ def my_invalid_token_callback(error):  # pylint: disable=W0613
         jsonify({'message': 'Invalid token. Please log in again.'}), 401)
 
 
-# def jwt_required(function):
-#     'JWT Decorator'
-#     @wraps(function)
-#     def decorated(*args, **kwargs):
-#         'Decorator'
-#         auth_token = None
-#
-#         if 'Authorization' in request.headers:
-#             auth_token = request.headers['Authorization'].split(' ')[1]
-#         else:
-#             return make_response(jsonify({'message': 'Token required.'}), 401)
-#         if auth_token in blacklisted_tokens:
-#             return make_response(
-#                 jsonify({'message': 'Blacklisted tokens.'}), 401)
-#         try:
-#             jwt.decode(auth_token, app.config['SECRET_KEY'])
-#             return function(*args, **kwargs)
-#         except jwt.ExpiredSignatureError:
-#             return make_response(
-#                 jsonify(
-#                     {'message': 'Signature expired. Please log in again.'}),
-#                 401)
-#         except jwt.InvalidTokenError:
-#             return make_response(
-#                 jsonify(
-#                     {'message': 'Invalid token. Please log in again.'}), 401)
-#     return decorated
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    'Loader function to check when a token is blacklisted'
+    jti = decrypted_token['jti']
+    return jti in blacklisted_tokens
 
 
 def is_user(login):
@@ -96,26 +74,6 @@ def check_login(login, password):
     return False
 
 
-# def encode_auth_token(login):
-#     """
-#     Generates the Auth Token
-#     :return: string
-#     """
-#     try:
-#         payload = {
-#             'exp': datetime.utcnow() + timedelta(days=0, seconds=3),
-#             'iat': datetime.utcnow(),
-#             'sub': login
-#         }
-#         return jwt.encode(
-#             payload,
-#             app.config['SECRET_KEY'],
-#             algorithm='HS256'
-#         )
-#     except Exception as exception:  # pylint: disable=W0703
-#         return exception
-
-
 class LogOutAPI(Resource):
     'LogOut Class'
     method_decorators = [jwt_required]
@@ -123,8 +81,8 @@ class LogOutAPI(Resource):
     @staticmethod
     def post():
         'Post function'
-        auth_token = request.headers['Authorization'].split(' ')[1]
-        blacklisted_tokens.add(auth_token)
+        jti = get_raw_jwt()['jti']
+        blacklisted_tokens.add(jti)
         return {'message': 'Successfully logged out.'}
 
 
@@ -155,9 +113,9 @@ class LoginAPI(Resource):
         'Post function'
         args = self.reqparse.parse_args()
         if check_login(args['login'], args['password']):
-            auth_token = encode_auth_token(args['login'])
+            auth_token = create_access_token(identity=args['login'])
             return {'message': 'Successfully logged',
-                    'auth_token': auth_token.decode()}, 201
+                    'auth_token': auth_token}, 201
         return {'message': 'Login failed'}, 401
 
 
