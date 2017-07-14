@@ -44,6 +44,13 @@ def my_revoked_token_callback():
     return make_response(jsonify({'message': 'Blacklisted tokens.'}), 401)
 
 
+@jwt.invalid_token_loader
+def my_invalid_token_callback():
+    'Loader function used when an invalid token accesses a protected endpoint'
+    return make_response(
+        jsonify({'message': 'Invalid token. Please log in again.'}), 401)
+
+
 # def jwt_required(function):
 #     'JWT Decorator'
 #     @wraps(function)
