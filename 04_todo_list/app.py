@@ -7,6 +7,7 @@ import jwt
 from flask import Flask, jsonify, request, make_response
 from flask_restful import Api, Resource, reqparse, fields, marshal, abort
 
+
 app = Flask(__name__)  # pylint: disable=C0103
 
 api = Api(app)  # pylint: disable=C0103
@@ -17,7 +18,11 @@ task_fields = {  # pylint: disable=C0103
     'done': fields.Boolean,
     'uri': fields.Url('task')
 }
-app.config['SECRET_KEY'] = "secret_key"  # pylint: disable=C0103
+app.config['SECRET_KEY'] = "secret_key"
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=3)
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
+app.config['JWT_IDENTITY_CLAIM'] = 'sub'
 users = []  # pylint: disable=C0103
 blacklisted_tokens = set()  # pylint: disable=C0103
 
