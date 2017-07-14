@@ -25,12 +25,12 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=3)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
 app.config['JWT_IDENTITY_CLAIM'] = 'sub'
-jwt = JWTManager(app) # pylint: disable=C0103
+jwt = JWTManager(app)  # pylint: disable=C0103
 users = []  # pylint: disable=C0103
 blacklisted_tokens = set()  # pylint: disable=C0103
 
 
-@jwt.expired_token_loader()
+@jwt.expired_token_loader
 def my_expired_token_callback():
     'Loader function used when an expired token accesses a protected endpoint'
     return make_response(
@@ -45,7 +45,7 @@ def my_revoked_token_callback():
 
 
 @jwt.invalid_token_loader
-def my_invalid_token_callback():
+def my_invalid_token_callback(error):  # pylint: disable=W0613
     'Loader function used when an invalid token accesses a protected endpoint'
     return make_response(
         jsonify({'message': 'Invalid token. Please log in again.'}), 401)
