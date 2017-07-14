@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 'Flask todo list api using flask-restful'
-from datetime import datetime, timedelta
+from datetime import timedelta
 # from functools import wraps
 # import jwt
 from flask import Flask, jsonify, request, make_response
