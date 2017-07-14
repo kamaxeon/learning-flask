@@ -25,7 +25,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(seconds=3)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
 app.config['JWT_IDENTITY_CLAIM'] = 'sub'
-jwt = JWTManager(app)
+jwt = JWTManager(app) # pylint: disable=C0103
 users = []  # pylint: disable=C0103
 blacklisted_tokens = set()  # pylint: disable=C0103
 
