@@ -8,10 +8,10 @@ from flask_jwt_extended import jwt_required
 from app.tasks import tasks, task_fields
 
 
-tasklistapi_bp = Blueprint('taskslistapi', __name__)  # pylint: disable=C0103
+tasklistapi_bp = Blueprint('tasks', __name__)  # pylint: disable=C0103
 tasklistapi = Api(tasklistapi_bp)  # pylint: disable=C0103
 
-class TaskListAPI2(Resource):
+class TaskListAPI(Resource):
     'Task List Api'
 
     def __init__(self):
@@ -22,7 +22,7 @@ class TaskListAPI2(Resource):
                                    location='json')
         self.reqparse.add_argument('description', type=str, default="",
                                    location='json')
-        super(TaskListAPI2, self).__init__()
+        super(TaskListAPI, self).__init__()
 
     @staticmethod
     def get():
@@ -52,4 +52,4 @@ class TaskListAPI2(Resource):
         del tasks[:]
         return {'tasks': marshal(tasks, task_fields)}
 
-tasklistapi.add_resource(TaskListAPI2, '/tasks')
+tasklistapi.add_resource(TaskListAPI, '/tasks')
