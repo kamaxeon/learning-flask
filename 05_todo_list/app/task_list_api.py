@@ -3,16 +3,15 @@
 'Task List API'
 
 from flask import Blueprint
-from flask_restful import Api, Resource, reqparse, marshal, abort
+from flask_restful import Api, Resource, reqparse, marshal
 from flask_jwt_extended import jwt_required
-from app.tokens import blacklisted_tokens
 from app.tasks import tasks, task_fields
 
 
-tasklistapi_bp = Blueprint('taskslistapi', __name__)
-tasklistapi = Api(tasklistapi_bp)
+tasklistapi_bp = Blueprint('taskslistapi', __name__)  # pylint: disable=C0103
+tasklistapi = Api(tasklistapi_bp)  # pylint: disable=C0103
 
-class TaskListAPI(Resource):
+class TaskListAPI2(Resource):
     'Task List Api'
 
     def __init__(self):
@@ -23,7 +22,7 @@ class TaskListAPI(Resource):
                                    location='json')
         self.reqparse.add_argument('description', type=str, default="",
                                    location='json')
-        super(TaskListAPI, self).__init__()
+        super(TaskListAPI2, self).__init__()
 
     @staticmethod
     def get():
@@ -53,4 +52,4 @@ class TaskListAPI(Resource):
         del tasks[:]
         return {'tasks': marshal(tasks, task_fields)}
 
-tasklistapi.add_resource(TaskListAPI, '/tasks')
+tasklistapi.add_resource(TaskListAPI2, '/tasks')

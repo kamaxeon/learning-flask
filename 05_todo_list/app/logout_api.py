@@ -9,8 +9,8 @@ from flask_jwt_extended import jwt_required, get_raw_jwt
 from app.tokens import blacklisted_tokens
 
 
-logoutapi_bp = Blueprint('logoutapi', __name__)
-logoutapi = Api(logoutapi_bp)
+logoutapi_bp = Blueprint('logoutapi', __name__)  # pylint: disable=C0103
+logoutapi = Api(logoutapi_bp)  # pylint: disable=C0103
 
 
 class LogOutAPI(Resource):

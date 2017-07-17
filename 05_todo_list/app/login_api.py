@@ -5,13 +5,12 @@
 
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
-from flask_jwt_extended import jwt_required, get_raw_jwt, create_access_token
-from app.tokens import blacklisted_tokens
+from flask_jwt_extended import create_access_token
 from app.users import check_login
 
 
-loginapi_bp = Blueprint('loginapi', __name__)
-loginapi = Api(loginapi_bp)
+loginapi_bp = Blueprint('loginapi', __name__)  # pylint: disable=C0103
+loginapi = Api(loginapi_bp)  # pylint: disable=C0103
 
 
 class LoginAPI(Resource):

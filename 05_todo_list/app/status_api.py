@@ -8,8 +8,8 @@ from flask_restful import Api, Resource
 from flask_jwt_extended import jwt_required
 
 
-statusapi_bp = Blueprint('statusapi', __name__)
-statusapi = Api(statusapi_bp)
+statusapi_bp = Blueprint('statusapi', __name__)  # pylint: disable=C0103
+statusapi = Api(statusapi_bp)  # pylint: disable=C0103
 
 
 class StatusAPI(Resource):

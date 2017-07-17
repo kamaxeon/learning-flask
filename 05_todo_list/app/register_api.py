@@ -8,8 +8,8 @@ from flask_restful import Api, Resource, reqparse
 from app.users import users, is_user
 from app.tokens import blacklisted_tokens
 
-registerapi_bp = Blueprint('registerapi', __name__)
-registerapi = Api(registerapi_bp)
+registerapi_bp = Blueprint('registerapi', __name__)  # pylint: disable=C0103
+registerapi = Api(registerapi_bp)  # pylint: disable=C0103
 
 class RegisterAPI(Resource):
     'Register Class'
