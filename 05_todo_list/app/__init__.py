@@ -12,6 +12,7 @@ from app.users import users, is_user, check_login
 from app.tokens import blacklisted_tokens
 from app.tasks import tasks, task_fields
 from app.register_api import registerapi_bp
+from app.logout_api import logoutapi_bp
 
 
 app = Flask(__name__)  # pylint: disable=C0103
@@ -54,16 +55,7 @@ def check_if_token_in_blacklist(decrypted_token):
     return jti in blacklisted_tokens
 
 
-class LogOutAPI(Resource):
-    'LogOut Class'
-    method_decorators = [jwt_required]
 
-    @staticmethod
-    def post():
-        'Post function'
-        jti = get_raw_jwt()['jti']
-        blacklisted_tokens.add(jti)
-        return {'message': 'Successfully logged out.'}
 
 
 class StatusAPI(Resource):
@@ -186,8 +178,8 @@ api.add_resource(TaskListAPI, '/todo/api/tasks', endpoint='tasks')
 api.add_resource(TaskAPI, '/todo/api/tasks/<int:id>', endpoint='task')
 api.add_resource(LoginAPI, '/todo/api/auth/login', endpoint='login')
 api.add_resource(StatusAPI, '/todo/api/auth/status', endpoint='status')
-api.add_resource(LogOutAPI, '/todo/api/auth/logout', endpoint='logout')
 
+app.register_blueprint(logoutapi_bp, url_prefix='/todo/api/auth')
 app.register_blueprint(registerapi_bp, url_prefix='/todo/api/auth')
 
 if __name__ == '__main__':
