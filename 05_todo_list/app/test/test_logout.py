@@ -4,7 +4,7 @@
 import unittest
 import json
 
-from test.base import BaseTestClass
+from app.test.base import BaseTestClass
 
 
 class LogOut(BaseTestClass):

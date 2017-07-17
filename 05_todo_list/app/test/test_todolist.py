@@ -5,7 +5,7 @@ import unittest
 import json
 
 from random import randint
-from test.base import BaseTestClass, DEFAULT_TITLE, DEFAULT_DESCRIPTION
+from app.test.base import BaseTestClass, DEFAULT_TITLE, DEFAULT_DESCRIPTION
 
 
 class TodoList(BaseTestClass):

@@ -5,7 +5,7 @@ import unittest
 import json
 import time
 
-from test.base import BaseTestClass
+from app.test.base import BaseTestClass
 
 
 class Status(BaseTestClass):
