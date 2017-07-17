@@ -1,24 +1,24 @@
 ## Objetivo
 
-Partimos del ejemplo [anterior](./03_todo_list), hemos introducido el concepto de tokens usando [jwt](https://jwt.io/), la implementación la hemos realizado con la librería [pyjwt](https://github.com/jpadilla/pyjwt). En esta iteración, se intentará reemplazar nuestra implementación inicial por la librería [flask-jwt-extended](https://github.com/vimalloc/flask-jwt-extended).
+Partimos del ejemplo [anterior](./04_todo_list), ya tenemos funcionando el todo list con jwt, pero nuestro fichero [app.py](./04_todo_list/app.py) ya tiene casi 250 líneas y puede que empiece a ser un poco complejo de manejar.
 
-Los métodos del todo list que usen el verbo PUT, deberán estar autentificados. No existirá tampoco persistencia con la autentificación, estará todo en memoria.
+En esta iteración, vamos a separar nuestro varios ficheros y vamos introducir el concepto de [blueprints en flask](http://flask.pocoo.org/docs/0.12/blueprints/), la idea es que tener nuestra aplicación lo más modular posible y poder reusar los componentes en el futuro.
 
-Los tests se intentarán mantener lo máximo posible, y sólo se deberán cambiar cuando la librería que usemos tenga un comportamiento diferente al anterior.
+Como pasó en la iteración anterior, debemos respetar los tests, y sólo cambiaremos la ubicación del código de la aplicación, pero no los tests en sí.
 
 
 ## API
 
 ### ToDo List
 
-| Método HTTP | URI                       | Acción                        |
-|-------------|---------------------------|-------------------------------|
-|     GET     | /todo/api/tasks           | Obtiene una lista de tareas   |
-|     GET     | /todo/api/tasks/[task_id] | Obtiene una tarea             |
-|    POST     | /todo/api/tasks           | Crea una nueva tarea          |
-|     PUT     | /todo/api/tasks/[task_id] | Actualiza una tarea existente |
-|   DELETE    | /todo/api/tasks/[task_id] | Borra una tarea               |
-|   DELETE    | /todo/api/tasks           | Borra todas las tareas        |
+| Método HTTP | URI                       | Acción                        | Requiere token |
+|-------------|---------------------------|-------------------------------|----------------|
+|     GET     | /todo/api/tasks           | Obtiene una lista de tareas   | No             |
+|     GET     | /todo/api/tasks/[task_id] | Obtiene una tarea             | No             |
+|    POST     | /todo/api/tasks           | Crea una nueva tarea          | Sí             |
+|     PUT     | /todo/api/tasks/[task_id] | Actualiza una tarea existente | Sí             |
+|   DELETE    | /todo/api/tasks/[task_id] | Borra una tarea               | No             |
+|   DELETE    | /todo/api/tasks           | Borra todas las tareas        | No             |
 
 ### Estructura de una tarea
 
@@ -31,12 +31,13 @@ La estructura que nos expondrá la api tendrá los siguiente campos:
 
 ### Autentificación
 
-| Método HTTP | URI                     | Acción                        |
-|-------------| ------------------------|-------------------------------|
-|     POST    | /todo/api/auth/register | Registra un nuevo usuario     |
-|     POST    | /todo/api/auth/login    | Autentifica a un usuario      |
-|     GET     | /todo/api/auth/status   | Obtiene el estado del usuario |
-|     POST    | /todo/api/auth/logout   | Des autentifica al usuario    |
+| Método HTTP | URI                     | Acción                        | Requiere token |
+|-------------| ------------------------|-------------------------------|----------------|
+|     POST    | /todo/api/auth/register | Registra un nuevo usuario     | No             |
+|     POST    | /todo/api/auth/login    | Autentifica a un usuario      | No             |
+|     GET     | /todo/api/auth/status   | Obtiene el estado del usuario | Sí             |
+|     POST    | /todo/api/auth/logout   | Des autentifica al usuario    | Sí             |
+|    DELETE   | /todo/api/auth/register | Borra todos los usuarios      | No             |
 
 ### Estructura de un usuario
 
@@ -48,7 +49,7 @@ La estructura que nos expondrá la api tendrá los siguiente campos:
 * **token**: El token inválido en sí (String)
 ## Enlaces:
 
- * https://github.com/vimalloc/flask-jwt-extended/tree/master/examples
+ * http://exploreflask.com/en/latest/blueprints.html
 
 ## Pruebas
 
