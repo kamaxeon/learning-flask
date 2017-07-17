@@ -10,5 +10,5 @@ task_fields = {  # pylint: disable=C0103
     'title': fields.String,
     'description': fields.String,
     'done': fields.Boolean,
-    'uri': fields.Url('task')
+    'uri': fields.Url('tasks')
 }
