@@ -151,7 +151,6 @@ class TodoList(BaseTestClass):
         data = json.loads(response.get_data(as_text=True))
         self.assertEqual(data['task']['title'], DEFAULT_TITLE)
         self.assertEqual(data['task']['description'], DEFAULT_DESCRIPTION)
-        self.assertEqual(data['task']['uri'], '/todo/api/tasks/1')
 
 
 if __name__ == '__main__':
