@@ -8,10 +8,11 @@ from flask_jwt_extended import jwt_required
 from app.tasks import tasks, task_fields
 
 
-taskapi_bp = Blueprint('tasks', __name__)  # pylint: disable=C0103
+taskapi_bp = Blueprint('task', __name__)  # pylint: disable=C0103
+taskapi_bp.endpoint('task')
 taskapi = Api(taskapi_bp)  # pylint: disable=C0103
 
-class TaskAPI2(Resource):
+class TaskAPI(Resource):
     'Task Api'
 
     def __init__(self):
@@ -20,7 +21,7 @@ class TaskAPI2(Resource):
         self.reqparse.add_argument('title', type=str, location='json')
         self.reqparse.add_argument('description', type=str, location='json')
         self.reqparse.add_argument('done', type=bool, location='json')
-        super(TaskAPI2, self).__init__()
+        super(TaskAPI, self).__init__()
 
     @staticmethod
     def get(id):  # pylint: disable=C0103,W0622
@@ -30,7 +31,7 @@ class TaskAPI2(Resource):
     @jwt_required
     def put(self, id):  # pylint: disable=C0103,W0622
         'Update a task'
-        task = TaskAPI2.find_task(id)
+        task = TaskAPI.find_task(id)
         args = self.reqparse.parse_args()
         for key, value in args.items():
             if value is not None:
@@ -40,7 +41,7 @@ class TaskAPI2(Resource):
     @staticmethod
     def delete(id):  # pylint: disable=C0103,W0622
         'Delete a task'
-        tasks.remove(TaskAPI2.find_task(id))
+        tasks.remove(TaskAPI.find_task(id))
         return ('', 204)
 
     @staticmethod
@@ -51,4 +52,4 @@ class TaskAPI2(Resource):
         except IndexError:
             abort(404, message='Task {} not found'.format(id))
 
-taskapi.add_resource(TaskAPI2, '/tasks/<int:id>')
+taskapi.add_resource(TaskAPI, '/tasks/<int:id>')
