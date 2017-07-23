@@ -14,4 +14,12 @@ python app.py
 
 ## Pruebas
 
-Lanzamos tox
+- Lanzamos tox  
+Debería pasar todos los test
+
+- Desde otra terminal, lanzamos curl:  
+Debería devolver una cadena, para la respuesta html, y un json para la respuesta
+json
+    - `curl http://localhost:5000/hello_world`         (html response)
+    - `curl http://localhost:5000/api/hello_world`     (json response)
+
