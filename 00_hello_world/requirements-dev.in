@@ -2,30 +2,40 @@
 
 # Revisión Código
 # ~~~~~~~~~~~~~~~
-autopep8
-flake8
-flake8-blind-except
-# flake8-debugger
-flake8-docstrings
-flake8-isort
-flake8-polyfill
-# flake8-quotes
-isort
-pep8
-pep8-naming
-pyflakes
-pylint
+autopep8                # A tool that automatically formats Python code to conform to the PEP 8 style guide
+flake8                  # the modular source code checker: pep8, pyflakes and co
+flake8-blind-except     # A flake8 extension that checks for blind except: statements
+flake8-bugbear          # A plugin for flake8 finding likely bugs and design problems in your program. Contains warnings that don't belong in pyflakes and pycodestyle.
+flake8-debugger         # ipdb/pdb statement checker plugin for flake8
+flake8-docstrings       # Extension for flake8 which uses pydocstyle to check docstrings
+flake8-isort            # flake8 plugin that integrates isort .
+# flake8-polyfill         # Polyfill package for Flake8 plugins
+flake8-quotes           # Flake8 lint for quotes
+flake8-single-quotes    # Flake8 lint to forbide single quotes.
+flake8-author           # Flake8 __author__ checker
+flake8-coding           # Adds coding magic comment checks to flake8
+flake8-todo             # TODO notes checker, plugin for flake8
+flake8-pytest           # pytest assert checker plugin for flake8
+isort                   # A Python utility / library to sort Python imports.
+pep8                    # Python style guide checker
+pep8-naming             # Check PEP-8 naming conventions, plugin for flake8
+pyflakes                # Passive checker of Python programs
+pylint                  # python code static checker
+pylint-flask            # pylint-flask is a Pylint plugin to aid Pylint in recognizing and understanding errors caused when using Flask
+pylint-common           # pylint-common is a Pylint plugin to improve Pylint error analysis of the standard Python library
+pylint-werkzeug         # pylint-werkzeug is a Pylint plugin to aid Pylint in recognising and understandingerrors caused when using Werkzeug
 
 # Documentación
 # ~~~~~~~~~~~~~
-coverage
-docutils
-pycodestyle
-pydocstyle
-pytest
-pytest-cov
-# pytest-pep8
-# pytest-pythonpath
+coverage                # Code coverage measurement for Python
+docutils                # Docutils -- Python Documentation Utilities
+pycodestyle             # Python style guide checker
+pydocstyle              # Python docstring style checker
+pytest                  # pytest: simple powerful testing with Python
+pytest-cov              # Pytest plugin for measuring coverage.
+pytest-pep8             # pytest plugin to check PEP8 requirements
+pytest-pythonpath       # pytest plugin for adding to the PYTHONPATH from command line or configs.
+pytest-pycodestyle      # pytest plugin to check PEP8 requirements (View doc, please)
 
 # Utilidades varias
 # ~~~~~~~~~~~~~~~~~
@@ -33,8 +43,8 @@ pytest-cov
 # click  # A simple wrapper around optparse for powerful command line utilities.
 # first  # Return the first true value of an iterable.
 #
-#ipython
-#ipython-genutils
+ipython
+ipython-genutils
 jedi
 # pip-tools
 # termcolor
