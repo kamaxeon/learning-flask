@@ -1,5 +1,8 @@
 *.pyc
+requirements-dev.txt
+requirements-prod.txt
 
 .tox/
 __pycache__/
 venv/
+htmlcov/
