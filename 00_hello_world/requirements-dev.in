@@ -1,0 +1,41 @@
+-r requirements-prod.in
+
+# Revisión Código
+# ~~~~~~~~~~~~~~~
+autopep8
+flake8
+flake8-blind-except
+# flake8-debugger
+flake8-docstrings
+flake8-isort
+flake8-polyfill
+# flake8-quotes
+isort
+pep8
+pep8-naming
+pyflakes
+pylint
+
+# Documentación
+# ~~~~~~~~~~~~~
+coverage
+docutils
+pycodestyle
+pydocstyle
+pytest
+pytest-cov
+# pytest-pep8
+# pytest-pythonpath
+
+# Utilidades varias
+# ~~~~~~~~~~~~~~~~~
+# astroid  # A abstract syntax tree for Python with inference support.
+# click  # A simple wrapper around optparse for powerful command line utilities.
+# first  # Return the first true value of an iterable.
+#
+#ipython
+#ipython-genutils
+jedi
+# pip-tools
+# termcolor
+# wrapt  # Module for decorators, wrappers and monkey patching.
