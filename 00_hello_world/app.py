@@ -11,7 +11,7 @@ app = Flask(__name__)  # pylint: disable=C0103
 @app.route('/hello_world')
 def hello_world():
     """Index."""
-    return 'Hello World!'
+    return 'Hello World!\n'
 
 
 @app.route('/api/hello_world')
