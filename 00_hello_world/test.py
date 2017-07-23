@@ -20,7 +20,7 @@ class BasicTestCase(unittest.TestCase):
         """Comprobando hello world html."""
         response = self.tester.get('/hello_world', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b'Hello World!')
+        self.assertEqual(response.data, b'Hello World!\n')
 
     def test_hello_world_json(self):
         """Comprobando index json."""
