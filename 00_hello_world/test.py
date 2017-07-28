@@ -1,33 +1,29 @@
 #!/usr/bin/env python
 # coding=utf-8
-"Clase de Test"
-import unittest
+
+"""Clase de Test."""
+
 import json
+import unittest
 
 from app import app
 
 
 class BasicTestCase(unittest.TestCase):
-    "Clase básica de Test"
+    """Clase básica de Test."""
 
     def setUp(self):
-        """
-        Setup function
-        """
+        """Test setup function."""
         self.tester = app.test_client(self)
 
     def test_hello_world_html(self):
-        """
-        Comprobando hello world html
-        """
+        """Comprobando hello world html."""
         response = self.tester.get('/hello_world', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b'Hello World!')
+        self.assertEqual(response.data, b'Hello World!\n')
 
     def test_hello_world_json(self):
-        """
-        Comprobando index json
-        """
+        """Comprobando index json."""
         response = self.tester.get('/api/hello_world',
                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
